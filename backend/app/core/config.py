@@ -1,0 +1,24 @@
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+class Settings(BaseSettings):
+    APP_NAME: str = "SYNTHESIS"
+    VERSION: str = "0.1.0"
+    DEBUG: bool = False
+    DEMO_MODE: bool = True
+    DATABASE_URL: str = "sqlite:///./data/synthesis.db"
+    RANDOM_SEED: int = 42
+    
+    DISAGREEMENT_LOW: float = 0.10
+    DISAGREEMENT_MEDIUM: float = 0.25
+    DISAGREEMENT_HIGH: float = 0.50
+    
+    REGIME_HEAVY_RAIN_MM: float = 50.0
+    REGIME_HEATWAVE_TEMP_C: float = 40.0
+    REGIME_HIGH_WIND_MS: float = 20.0
+    
+    MINIMUM_SAMPLES: int = 30
+    LOG_LEVEL: str = "INFO"
+
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+
+settings = Settings()
