@@ -96,6 +96,11 @@ class BlendResult(BaseModel):
         description="True if only one model was available",
     )
     run_id: str = Field(..., description="Unique run identifier for traceability")
+    cycle_time: str = Field(default="", description="Forecast cycle timestamp")
+    algorithm_version: str = Field(default="0.1.0", description="Blending algorithm version")
+    dataset_version: str = Field(default="demo-v1", description="Input dataset version")
+    config_hash: str = Field(default="", description="Configuration fingerprint")
+    source_availability: dict[str, str] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def validate_weights_sum_to_one(self) -> "BlendResult":

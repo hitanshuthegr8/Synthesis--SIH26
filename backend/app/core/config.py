@@ -7,6 +7,20 @@ class Settings(BaseSettings):
     DEMO_MODE: bool = True
     DATABASE_URL: str = "sqlite:///./data/synthesis.db"
     RANDOM_SEED: int = 42
+    GFS_ENABLED: bool = False
+    GFS_BASE_URL: str = "https://nomads.ncep.noaa.gov"
+    GFS_CYCLE: int = 0
+    GFS_CACHE_DIR: str = "./data/gfs"
+    GFS_REQUEST_TIMEOUT_SECONDS: float = 30.0
+    GFS_MAX_DOWNLOAD_BYTES: int | None = None
+    ECMWF_ENABLED: bool = False
+    ECMWF_BASE_URL: str = "https://data.ecmwf.int/forecasts"
+    ECMWF_CACHE_DIR: str = "./data/ecmwf"
+    ECMWF_REQUEST_TIMEOUT_SECONDS: float = 30.0
+    ERA5_ENABLED: bool = False
+    ERA5_CDS_URL: str = "https://cds.climate.copernicus.eu/api"
+    ERA5_CDS_KEY: str | None = None
+    ERA5_CACHE_DIR: str = "./data/era5"
     
     DISAGREEMENT_LOW: float = 0.10
     DISAGREEMENT_MEDIUM: float = 0.25

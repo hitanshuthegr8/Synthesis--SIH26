@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from .core.config import settings
 from .core.logging import get_logger
-from .api.routes import forecasts, blend, reliability, verification
+from .api.routes import forecasts, blend, reliability, verification, phase15, spatial
 
 logger = get_logger(__name__)
 
@@ -27,6 +27,8 @@ app.include_router(forecasts.router)
 app.include_router(blend.router)
 app.include_router(reliability.router)
 app.include_router(verification.router)
+app.include_router(spatial.router)
+app.include_router(phase15.router)
 
 @app.get("/api/health")
 async def health():
