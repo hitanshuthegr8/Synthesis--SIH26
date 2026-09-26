@@ -1,11 +1,10 @@
 """Deterministic offline multi-model forecast generation for demo and tests."""
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from random import Random
 from typing import Iterable
 
 from app.core.constants import SUPPORTED_MODELS, SUPPORTED_VARIABLES, VARIABLE_UNITS
 from app.core.config import settings
-from app.domain.forecast import Forecast
 from app.ingestion.base import BaseForecastIngestor, IngestionBatchResult, process_forecast_batch
 
 

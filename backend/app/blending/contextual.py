@@ -1,12 +1,13 @@
 """Bounded, explainable Phase 1 adjustments to base model weights."""
 from collections.abc import Mapping
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.blending.weights import normalize_trust_scores
 from app.core.constants import DisagreementLevel
 
 
 class ContextualAdjustment(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
     model_id: str
     base_weight: float = Field(ge=0.0)
     regime_factor: float = Field(gt=0.0)

@@ -1,5 +1,4 @@
 """Typed SQLite repository methods; core engines never depend on SQL rows."""
-import json
 from collections.abc import Sequence
 
 from app.domain.forecast import Forecast, Observation
@@ -29,6 +28,14 @@ class SynthesisRepository:
     def save_verification(self, verification: VerificationResult) -> None:
         self._upsert("verification_results", verification.run_id, verification)
 
+    def save_forecast_cycle(self, run_id: str, payload: str) -> None:
+        with self.database.connect() as connection:
+            connection.execute(
+                "INSERT INTO forecast_cycles (run_id, payload) VALUES (?, ?) "
+                "ON CONFLICT(run_id) DO UPDATE SET payload=excluded.payload",
+                (run_id, payload),
+            )
+
     def list_forecasts(self) -> list[Forecast]:
         return self._load_many("forecasts", Forecast)
 
@@ -43,6 +50,20 @@ class SynthesisRepository:
 
     def get_verification(self, run_id: str) -> VerificationResult | None:
         return self._get_one("verification_results", run_id, VerificationResult)
+
+    def get_forecast_cycle(self, run_id: str) -> str | None:
+        with self.database.connect() as connection:
+            row = connection.execute(
+                "SELECT payload FROM forecast_cycles WHERE run_id = ?", (run_id,)
+            ).fetchone()
+        return row["payload"] if row else None
+
+    def get_latest_forecast_cycle(self) -> str | None:
+        with self.database.connect() as connection:
+            row = connection.execute(
+                "SELECT payload FROM forecast_cycles ORDER BY rowid DESC LIMIT 1"
+            ).fetchone()
+        return row["payload"] if row else None
 
     def _save_many(self, table: str, models: Sequence[object]) -> None:
         with self.database.connect() as connection:

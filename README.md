@@ -38,16 +38,25 @@ npm install
 npm run dev
 ```
 
-## Phase 1 Features
-- Rule-based weighting
-- Weather regime classification
-- Skill evaluation
-- Interactive UI dashboard
-- Verification metrics
-- Clearly labelled offline demo scenarios: Normal, Heavy Rain, and Model Conflict
+## Phase 1.5 (submission scope)
+
+End-to-end adaptive forecast fusion: ingestion → validation → skill → regime → disagreement → weights → blend → uncertainty → explanation → verification → autopsy.
+
+**DEMO MODE · SYNTHETIC BENCHMARK** — all four sources are deterministic adapters; computation is real.
+
+```bash
+make setup
+make generate-demo
+make seed
+make test
+docker compose up --build
+```
+
+See [docs/DEMO.md](docs/DEMO.md), [docs/ALGORITHM.md](docs/ALGORITHM.md), and [BUILD_STATUS.md](BUILD_STATUS.md).
 
 ## Disclaimer
-This project is an early-stage prototype (Phase 1). Results are illustrative and not validated for operational forecasting. Future phases (Phase 2) will integrate robust Machine Learning weighting algorithms.
+
+Forecast guidance only. Not an official warning service. Demo results are not operational verification. Phase 2 adds research-grade probabilistic blending and live adapters.
 
 ## License
 MIT

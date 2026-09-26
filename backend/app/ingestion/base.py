@@ -18,7 +18,7 @@ from datetime import datetime
 from typing import Any, Sequence
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.core.constants import SUPPORTED_VARIABLES, SUPPORTED_MODELS, VARIABLE_UNITS
+from app.core.constants import SUPPORTED_VARIABLES
 from app.domain.forecast import Forecast
 
 

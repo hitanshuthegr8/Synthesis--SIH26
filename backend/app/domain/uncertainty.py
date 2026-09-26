@@ -21,6 +21,8 @@ Future replacement:
     Phase 2 adds conformal prediction and CRPS-calibrated intervals.
     The UncertaintyEstimate domain object interface remains stable.
 """
+from datetime import datetime
+
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.core.constants import DisagreementLevel, UncertaintyLevel
@@ -96,6 +98,26 @@ class BlendResult(BaseModel):
         description="True if only one model was available",
     )
     run_id: str = Field(..., description="Unique run identifier for traceability")
+    processing_time_ms: int = Field(
+        default=0,
+        ge=0,
+        description="Measured server-side processing duration in milliseconds",
+    )
+    algorithm: str = Field(
+        default="Adaptive Skill-Context Blender",
+        description="Algorithm used to generate this result",
+    )
+    verification_dataset: str = Field(
+        default="DEMO",
+        description="Provenance label for the skill-verification data",
+    )
+    cycle_time: datetime | None = Field(
+        default=None,
+        description="Forecast initialization cycle represented by this result",
+    )
+    region: str = Field(default="global", description="Forecast domain or regional identifier")
+    dataset_version: str = Field(default="unknown", description="Input dataset version")
+    configuration_hash: str = Field(default="unknown", description="Hash of effective blending configuration")
 
     @model_validator(mode="after")
     def validate_weights_sum_to_one(self) -> "BlendResult":

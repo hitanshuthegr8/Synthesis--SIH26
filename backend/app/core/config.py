@@ -3,9 +3,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     APP_NAME: str = "SYNTHESIS"
     VERSION: str = "0.1.0"
+    APP_ENV: str = "development"
     DEBUG: bool = False
     DEMO_MODE: bool = True
     DATABASE_URL: str = "sqlite:///./data/synthesis.db"
+    DATA_DIR: str = "./data"
     RANDOM_SEED: int = 42
     
     DISAGREEMENT_LOW: float = 0.10
