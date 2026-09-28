@@ -21,7 +21,7 @@ def _field(source: str, value: float) -> SpatialForecast:
 
 def test_gfs_and_ecmwf_produce_valid_synthesis_forecast() -> None:
     result = blend_spatial_forecasts({"GFS": _field("NOAA", 10.0), "ECMWF": _field("ECMWF", 20.0)})
-    assert result.source == "SYNTHESIS"
+    assert result.source == "AIRAVAT"
     assert result.units == "C"
     assert len(result.values) == 141
     assert len(result.values[0]) == 141

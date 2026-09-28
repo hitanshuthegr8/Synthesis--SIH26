@@ -42,7 +42,7 @@ def test_service_retrieves_both_sources_and_uses_equal_weights() -> None:
     result = SpatialBlendService(gfs_provider=gfs, ecmwf_provider=ecmwf).get_blended_forecast(
         variable="temperature", lead_hours=24, initialization=initialization
     )
-    assert result.source == "SYNTHESIS"
+    assert result.source == "AIRAVAT"
     assert result.values[0][0] == 15.0
     assert result.provenance["weight_policy"] == "equal-weight baseline"
     assert result.provenance["source_weights"] == {"GFS": 0.5, "ECMWF": 0.5}

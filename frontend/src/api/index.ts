@@ -1,2 +1,2 @@
-export { ApiError, api } from "./client";
+export { ApiError, api, synthesis } from "./client";
 export type { LoadingState } from "./client";

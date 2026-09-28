@@ -23,7 +23,7 @@ def _forecast(source: str, values: list[list[float]], **overrides: object) -> Sp
 
 def test_equal_weight_blend_is_mathematically_correct() -> None:
     result = blend_spatial_forecasts({"GFS": _forecast("NOAA", [[10.0] * 141] * 141), "ECMWF": _forecast("ECMWF", [[20.0] * 141] * 141)})
-    assert result.source == "SYNTHESIS"
+    assert result.source == "AIRAVAT"
     assert result.values[0][0] == 15.0
     assert result.provenance["weight_policy"] == "equal-weight baseline"
 

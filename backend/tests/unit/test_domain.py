@@ -313,7 +313,7 @@ class TestUncertaintyEstimate:
 
 
 class TestBlendResult:
-    """Test BlendResult domain model — the primary output of SYNTHESIS."""
+    """Test BlendResult domain model — the primary output of AIRAVAT."""
 
     def _make_blend(self, **overrides) -> BlendResult:
         defaults = dict(

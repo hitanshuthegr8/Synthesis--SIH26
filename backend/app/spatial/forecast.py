@@ -8,13 +8,17 @@ allowed to expose values.
 from abc import ABC, abstractmethod
 from datetime import datetime
 from math import isfinite
+from threading import Lock
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+# ecCodes is not thread-safe; concurrent cfgrib decodes from FastAPI's threadpool deadlock.
+GRIB_DECODE_LOCK = Lock()
+
 
 class GridSpec(BaseModel):
-    """Target regular latitude/longitude grid for the SYNTHESIS MVP."""
+    """Target regular latitude/longitude grid for the AIRAVAT MVP."""
 
     model_config = ConfigDict(frozen=True)
 
@@ -91,6 +95,44 @@ def validate_axis(axis: list[float], start: float, end: float, resolution: float
         raise ValueError(f"{name} axis does not match the configured domain")
     if any(abs((right - left) - resolution) > tolerance for left, right in zip(axis, axis[1:])):
         raise ValueError(f"{name} axis resolution must be {resolution}")
+
+
+SUPPORTED_SPATIAL_VARIABLES = ("temperature", "tmax", "precipitation", "wind_speed")
+
+
+def decode_variable(dataset: Any, variable: str, source: str) -> tuple[list[list[float]], str, str]:
+    """Convert a decoded GRIB dataset into (values, normalized units, source units).
+
+    Temperature becomes Celsius, precipitation millimetres, and wind speed the
+    magnitude of the 10 m u/v components in m/s.
+    """
+    if variable == "wind_speed":
+        u_component = dataset.data_vars.get("u10")
+        v_component = dataset.data_vars.get("v10")
+        if u_component is None or v_component is None:
+            raise SpatialForecastUnavailable(f"{source} 10 m wind components (u10, v10) are unavailable")
+        source_units = str(u_component.attrs.get("units", ""))
+        if source_units not in {"m s**-1", "m/s", "m s-1"} or str(v_component.attrs.get("units", "")) != source_units:
+            raise SpatialForecastUnavailable(f"Unsupported {source} wind units: {source_units}")
+        import numpy as np
+
+        return np.hypot(u_component.values, v_component.values).tolist(), "m/s", source_units
+    data = next(iter(dataset.data_vars.values()))
+    source_units = str(data.attrs.get("units", ""))
+    values = data.values.tolist()
+    if variable in {"temperature", "tmax"}:
+        if source_units in {"K", "kelvin"}:
+            return [[float(value) - 273.15 for value in row] for row in values], "C", source_units
+        if source_units in {"C", "degC", "°C"}:
+            return values, "C", source_units
+        raise SpatialForecastUnavailable(f"Unsupported {source} temperature units: {source_units}")
+    if variable == "precipitation":
+        if source_units == "m":
+            return [[max(0.0, float(value) * 1000.0) for value in row] for row in values], "mm", source_units
+        if source_units in {"kg m**-2", "kg m-2", "mm", ""}:
+            return [[max(0.0, float(value)) for value in row] for row in values], "mm", source_units
+        raise SpatialForecastUnavailable(f"Unsupported {source} precipitation units: {source_units}")
+    raise SpatialForecastUnavailable(f"Unsupported {source} variable: {variable}")
 
 
 def validate_spatial_forecast(forecast: SpatialForecast) -> SpatialForecast:

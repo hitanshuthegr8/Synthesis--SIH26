@@ -11,6 +11,7 @@ dist/
 
 # Local runtime data
 backend/data/
+.gstack/
 *.db
 
 # Environment and editor files

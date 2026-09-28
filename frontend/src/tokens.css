@@ -1,49 +1,36 @@
 :root {
-  --color-background: #eef3f2;
-  --color-surface: #ffffff;
-  --color-surface-elevated: #f7faf9;
-  --color-border: #d3e0dd;
-  --color-border-subtle: #edf2f0;
-  --color-text-primary: #18242c;
-  --color-text-secondary: #58716e;
-  --color-text-muted: #617874;
-  --color-brand: #103b43;
-  --color-brand-accent: #135f61;
-  --color-success: #246a5b;
-  --color-warning: #8a6719;
-  --color-danger: #9a3f20;
+  color-scheme: dark;
+  --bg: #061013;
+  --bg-2: #081519;
+  --panel: #0c171a;
+  --panel-2: #0f1e22;
+  --panel-3: #13272c;
+  --line: rgba(143, 199, 189, 0.13);
+  --line-strong: rgba(143, 199, 189, 0.26);
+  --text: #e9f4f1;
+  --text-2: #a9c3be;
+  --muted: #718f89;
+  --brand: #5fd4bd;
+  --brand-2: #2fb89e;
+  --brand-ink: #062a24;
 
-  --source-ecmwf: #2774ae;
-  --source-gfs: #d97745;
-  --source-gefs: #7b61a8;
-  --source-ai: #16706f;
-  --source-blend: #10494d;
-  --source-observation: #e0883e;
+  /* Categorical data colours — validated for this dark surface (dataviz validator, all-pairs). */
+  --series-gfs: #3987e5;
+  --series-ifs: #d95926;
+  --series-aifs: #199e70;
+  --series-4: #c98500;
+  --synthesis: #e9f4f1;
 
-  --map-temperature-low: #315f9e;
-  --map-temperature-high: #b94c3b;
-  --map-precipitation-low: #b9dfe8;
-  --map-precipitation-high: #175b8b;
+  /* Status colours are reserved for hazard/run state and always ship with an icon and label. */
+  --status-good: #0ca30c;
+  --status-warning: #fab219;
+  --status-serious: #ec835a;
+  --status-critical: #d03b3b;
 
-  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
-  --font-size-body: 13px;
-  --font-size-caption: 11px;
-  --font-size-title: 28px;
-  --font-weight-regular: 400;
-  --font-weight-semibold: 700;
-  --font-weight-bold: 800;
-
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-
-  --radius-sm: 5px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-pill: 999px;
-  --border-width: 1px;
+  --font-sans: Inter, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Code", ui-monospace, monospace;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
 }

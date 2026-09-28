@@ -70,7 +70,7 @@ class BlendResult(BaseModel):
     model_config = ConfigDict(protected_namespaces=())
     """Complete result of the forecast blending process.
 
-    This is the primary output of the SYNTHESIS engine, combining
+    This is the primary output of the AIRAVAT engine, combining
     the blended forecast with weights, uncertainty, disagreement,
     regime, and explanation.
     """

@@ -1,4 +1,4 @@
-"""Print one named, clearly synthetic SYNTHESIS demo forecast scenario."""
+"""Print one named, clearly synthetic AIRAVAT demo forecast scenario."""
 import argparse
 import json
 import sys

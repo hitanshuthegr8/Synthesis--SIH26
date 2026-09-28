@@ -70,7 +70,7 @@ class XarrayERA5Reader:
                 or len(values) != GRID_SPEC.latitude_count
                 or any(len(row) != GRID_SPEC.longitude_count for row in values)
             ):
-                raise SpatialForecastUnavailable("ERA5 grid does not exactly match the SYNTHESIS target grid")
+                raise SpatialForecastUnavailable("ERA5 grid does not exactly match the AIRAVAT target grid")
             return SpatialTruth(
                 source="ERA5",
                 variable="temperature",
@@ -166,4 +166,4 @@ def _validate_exact_target_grid(truth: SpatialTruth) -> None:
         or len(truth.values) != GRID_SPEC.latitude_count
         or any(len(row) != GRID_SPEC.longitude_count for row in truth.values)
     ):
-        raise SpatialForecastUnavailable("ERA5 grid does not exactly match the SYNTHESIS target grid")
+        raise SpatialForecastUnavailable("ERA5 grid does not exactly match the AIRAVAT target grid")

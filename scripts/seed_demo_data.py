@@ -1,4 +1,4 @@
-"""Seed a SQLite database with clearly synthetic SYNTHESIS demo data."""
+"""Seed a SQLite database with clearly synthetic AIRAVAT demo data."""
 import argparse
 import json
 import sys

@@ -39,7 +39,7 @@ def blend_spatial_forecasts(
         selected_weights,
     )
     provenance = {
-        "model": "SYNTHESIS",
+        "model": "AIRAVAT",
         "blend_method": "weighted mean",
         "weight_policy": "equal-weight baseline" if weights is None else "explicit weights",
         "source_models": [
@@ -52,7 +52,7 @@ def blend_spatial_forecasts(
         },
     }
     result = SpatialForecast(
-        source="SYNTHESIS",
+        source="AIRAVAT",
         variable=reference.variable,
         initialization=reference.initialization,
         lead_hours=reference.lead_hours,

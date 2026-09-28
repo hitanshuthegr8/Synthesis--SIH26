@@ -52,7 +52,7 @@ def test_era5_normalizes_kelvin_to_celsius() -> None:
     assert normalize_kelvin_values([[273.15, 274.15]]) == [[0.0, 1.0]]
 
 
-def test_era5_grid_mismatch_is_unavailable() -> None:
+def test_era5_grid_mismatch_is_unavailable(tmp_path: Path) -> None:
     class Reader:
         def read(self, _path: Path, *, initialization: datetime, lead_hours: int) -> SpatialTruth:
             axes = [5.0 + i * 0.5 for i in range(71)]
@@ -68,7 +68,7 @@ def test_era5_grid_mismatch_is_unavailable() -> None:
             Path(target).write_bytes(b"fixture")
 
     with pytest.raises(SpatialForecastUnavailable, match="does not exactly match"):
-        ERA5Provider(client=Client(), reader=Reader(), cache_dir="").get_truth(
+        ERA5Provider(client=Client(), reader=Reader(), cache_dir=str(tmp_path)).get_truth(
             variable="temperature",
             initialization=datetime(2026, 9, 25, tzinfo=timezone.utc),
             lead_hours=24,

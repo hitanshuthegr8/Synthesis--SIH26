@@ -150,6 +150,6 @@ async def test_spatial_blend_endpoint_returns_unavailable_without_provider_fallb
         )
     payload = response.json()
     assert payload["status"] == "UNAVAILABLE"
-    assert payload["source"] == "SYNTHESIS"
+    assert payload["source"] == "AIRAVAT"
     assert payload["values"] is None
     assert "ECMWF unavailable" in payload["reason"]
