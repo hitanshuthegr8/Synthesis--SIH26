@@ -18,12 +18,17 @@ SCENARIOS = {
     "normal": DemoScenario("normal", "temperature", {"ecmwf": 31.2, "gfs": 30.8, "ai": 31.4, "gefs": 30.9}, 31.1),
     "heavy_rain": DemoScenario("heavy_rain", "precipitation", {"ecmwf": 48.0, "gfs": 21.0, "ai": 57.0, "gefs": 29.0}, 52.0),
     "model_conflict": DemoScenario("model_conflict", "precipitation", {"ecmwf": 20.0, "gfs": 85.0, "ai": 31.0, "gefs": 77.0}, 29.0),
+    "model_failure": DemoScenario("model_failure", "precipitation", {"ecmwf": 48.0, "gfs": 5.0, "ai": 57.0, "gefs": 29.0}, 52.0),
 }
+
+# PRD scenario name alias (MODEL_DISAGREEMENT demo).
+SCENARIO_ALIASES = {"model_disagreement": "model_conflict"}
 
 
 def get_scenario(name: str) -> DemoScenario:
+    canonical = SCENARIO_ALIASES.get(name, name)
     try:
-        return SCENARIOS[name]
+        return SCENARIOS[canonical]
     except KeyError as error:
         raise ValueError(f"Unknown demo scenario: {name}") from error
 

@@ -17,6 +17,8 @@ import type {
   LayerId,
   OperationalRun,
   PipelineRun,
+  PipelineScenario,
+  PipelineSource,
   PointExplanation,
   SkillSummary,
   SourceId,
@@ -85,7 +87,9 @@ async function post<T>(path: string, timeoutMs = defaultTimeoutMs, body?: unknow
     });
     if (!response.ok) {
       const detail = await response.json().then((payload: { detail?: unknown }) => payload.detail).catch(() => undefined);
-      throw new ApiError(typeof detail === "string" ? detail : `Request failed with status ${response.status}.`, response.status);
+      const nested = (detail as { error?: { message?: unknown } } | undefined)?.error?.message;
+      const message = typeof detail === "string" ? detail : typeof nested === "string" ? nested : `Request failed with status ${response.status}.`;
+      throw new ApiError(message, response.status);
     }
     return await response.json() as T;
   } catch (caught) {
@@ -140,8 +144,8 @@ export const synthesis = {
   run: (runId: string) => get<OperationalRun>(`/api/synthesis/runs/${encodeURIComponent(runId)}`),
   startRun: (body: { initialization?: string; variables: VariableId[]; leads: number[]; days: number[] }) =>
     post<OperationalRun>("/api/synthesis/runs", 30_000, body),
-  pipeline: (variable: string, lead: number, scenario?: string) =>
-    post<PipelineRun>("/api/pipeline/run", 30_000, { variable, lead_hours: lead, scenario: scenario || null }),
+  pipeline: (scenario: PipelineScenario, lead: number, unavailable: PipelineSource[] = []) =>
+    post<PipelineRun>("/api/pipeline/run", 30_000, { scenario, lead_hours: lead, unavailable_sources: unavailable }),
 };
 
 function query(values: Record<string, string | number | undefined>): string {

@@ -1,6 +1,6 @@
 """Sample-aware conversion of historical skill into interpretable model weights."""
 from collections import defaultdict
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.core.config import settings
 from app.core.constants import EPSILON
@@ -8,6 +8,7 @@ from app.domain.model import ModelSkill
 
 
 class ReliabilityEstimate(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
     model_id: str
     variable: str
     lead_hours: int = Field(ge=0)

@@ -1,9 +1,8 @@
 """Configuration-driven ensemble disagreement statistics."""
-import math
 from collections.abc import Sequence
 from statistics import fmean, median, pstdev
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from app.core.config import settings
 from app.core.constants import DisagreementLevel, EPSILON

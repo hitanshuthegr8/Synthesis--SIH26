@@ -1,4 +1,4 @@
-import type { Blend, ComputationTrace, Forecast, SpatialFieldResponse, Verification } from "./api";
+import type { Blend, Forecast, SpatialFieldResponse, Verification } from "./api";
 
 export type SourceId = "GFS" | "ECMWF" | "AIFS";
 export type VariableId = "temperature" | "tmax" | "precipitation" | "wind_speed";
@@ -144,10 +144,31 @@ export type OperationalRun = {
   products: { name: string; path: string; weighting?: string; adaptive_vs_equal_pct?: number | null; skill_samples?: number; sources?: string[]; flags?: string[]; watch?: string[] }[];
 };
 
+export type PipelineScenario = "normal" | "heavy_rain" | "model_conflict" | "model_disagreement" | "model_failure";
+export type PipelineSource = "ecmwf" | "gfs" | "gefs" | "ai";
+
+/** Response of POST /api/pipeline/run (forecast-cycle pipeline on a synthetic benchmark point). */
 export type PipelineRun = {
   run_id: string;
-  blend: Blend;
+  status: string;
+  blend: Pick<Blend, "variable" | "blended_value" | "lower_bound" | "upper_bound" | "model_weights" | "disagreement" | "regime" | "regime_confidence" | "explanation" | "fallback_mode" | "run_id" | "dataset_version"> & {
+    algorithm: string;
+    processing_time_ms: number;
+    region: string;
+    configuration_hash: string;
+  };
   forecasts: Forecast[];
   verification: Verification;
-  trace: ComputationTrace;
+  autopsy: { assessment: string; blend_error: number; model_forecasts: Record<string, number>; model_errors: Record<string, number> };
+  trace: {
+    scenario: string;
+    status: string;
+    duration_ms: number;
+    algorithm_version: string;
+    dataset_version: string;
+    configuration_hash: string;
+    stale_from_run_id: string | null;
+    source_availability: Record<string, boolean>;
+    steps: { name: string; status: string; duration_ms: number; details: string[] }[];
+  };
 };

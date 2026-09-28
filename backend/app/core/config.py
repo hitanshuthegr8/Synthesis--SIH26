@@ -3,9 +3,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     APP_NAME: str = "AIRAVAT"
     VERSION: str = "0.1.0"
+    APP_ENV: str = "development"
     DEBUG: bool = False
     DEMO_MODE: bool = True
     DATABASE_URL: str = "sqlite:///./data/synthesis.db"
+    DATA_DIR: str = "./data"
     RANDOM_SEED: int = 42
     GFS_ENABLED: bool = False
     GFS_BASE_URL: str = "https://nomads.ncep.noaa.gov"

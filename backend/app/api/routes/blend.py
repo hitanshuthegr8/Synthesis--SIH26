@@ -1,4 +1,5 @@
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
+from time import perf_counter
 from uuid import uuid4
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
@@ -23,6 +24,7 @@ class BlendRequest(BaseModel):
 
 
 def build_demo_blend(variable: str, lead_hours: int, scenario: str | None = None) -> BlendResult:
+    started_at = perf_counter()
     if variable not in SUPPORTED_VARIABLES:
         raise HTTPException(status_code=422, detail=f"Unsupported variable: {variable}")
     forecasts = demo_forecasts(variable, lead_hours, scenario)
@@ -39,7 +41,11 @@ def build_demo_blend(variable: str, lead_hours: int, scenario: str | None = None
         model_weights=core.weights, disagreement=disagreement, regime=regime.name.value,
         regime_confidence=regime.confidence,
         explanation=ExplanationEngine().generate(core.weights, regime, disagreement, uncertainty),
-        fallback_mode=core.fallback_mode, run_id=f"demo-{uuid4().hex}",
+        fallback_mode=core.fallback_mode,
+        run_id=f"SYN-{datetime.now(timezone.utc):%Y%m%d}-{uuid4().hex[:6].upper()}",
+        processing_time_ms=round((perf_counter() - started_at) * 1000),
+        algorithm="Adaptive Skill-Context Blender",
+        verification_dataset="DEMO DATASET",
     )
 
 

@@ -25,7 +25,7 @@ Future replacement:
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from app.core.constants import SUPPORTED_VARIABLES, VARIABLE_UNITS
+from app.core.constants import SUPPORTED_VARIABLES
 
 
 class Forecast(BaseModel):

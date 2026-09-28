@@ -15,6 +15,19 @@ async def test_forecasts_endpoint_returns_all_demo_models() -> None:
 
 
 @pytest.mark.asyncio
+async def test_demo_manifest_is_verified_and_hashes_all_archive_files() -> None:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/demo/manifest")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["integrity"] == "verified"
+    assert payload["generation_seed"] == 42
+    assert len(payload["file_hashes"]) == 5
+    assert all(len(digest) == 64 for digest in payload["file_hashes"].values())
+
+
+@pytest.mark.asyncio
 async def test_blend_endpoint_returns_valid_weighted_result() -> None:
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.post("/api/blend", json={"variable": "precipitation", "lead_hours": 24})

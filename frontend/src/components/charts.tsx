@@ -59,7 +59,7 @@ export function NumberLine({ models, blend, lower, upper, observation, units }: 
       <span className="nl-blend" style={{ left: x(blend) }} data-tip={`AIRAVAT blend: ${blend.toFixed(1)} ${units}`}><b>Blend {blend.toFixed(1)}</b></span>
       {observation !== undefined && <span className="nl-obs" style={{ left: x(observation) }} data-tip={`Demo observation: ${observation.toFixed(1)} ${units}`}><b>Obs {observation.toFixed(1)}</b></span>}
     </div>
-    <div className="nl-axis">{ticks.map((tick) => <span key={tick} style={{ left: x(tick) }}>{tick.toFixed(0)}</span>)}</div>
+    <div className="nl-axis">{ticks.map((tick) => <span key={tick} style={{ left: x(tick) }}>{Math.round(tick) || 0}</span>)}</div>
   </div>;
 }
 
