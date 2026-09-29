@@ -19,3 +19,4 @@ backend/data/
 .env.*
 .vscode/
 .idea/
+!.env.example
