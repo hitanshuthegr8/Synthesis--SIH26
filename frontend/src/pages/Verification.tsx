@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { KeyRound } from "lucide-react";
 import { api } from "../api";
 import { useApp } from "../app/context";
 import { SpatialFieldMap } from "../components/SpatialFieldMap";
@@ -25,9 +24,6 @@ export function Verification() {
       <Segmented label="Lead" value={lead} onChange={setLead} options={[24, 48, 72].map((value) => ({ value, label: `+${value} h` }))} />
       <span className="toolbar-note">Independent verification against ERA5 reanalysis for {cycleLabel(initialization)}; 2 m temperature.</span>
     </div>
-    {!catalog?.era5_enabled && <Notice tone="warn" title="ERA5 is not configured" action={<p className="fine"><KeyRound size={12} /> Add <code>ERA5_ENABLED=true</code> and <code>ERA5_CDS_KEY=…</code> to <code>backend/.env</code> (free key from the Copernicus Climate Data Store), then restart the backend.</p>}>
-      The weight maps are scored against model analyses, which favour whichever model produced them. ERA5 is the independent reference that can show whether the blend beats every single model. It is published about five days late, so it scores older cycles that the operational run has archived.
-    </Notice>}
     {result.status === "loading" && <Card><Loading label="Requesting ERA5 truth…" /></Card>}
     {verification?.status === "UNAVAILABLE" && catalog?.era5_enabled && <Notice tone="warn" title="Verification unavailable">{verification.reason}</Notice>}
     {verification?.status === "AVAILABLE" && verification.metrics && <>
