@@ -9,7 +9,7 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from app.core.config import settings
-from app.spatial.forecast import GRID_SPEC, SpatialForecast, SpatialForecastProvider, SpatialForecastUnavailable, validate_spatial_forecast
+from app.spatial.forecast import GRIB_DECODE_LOCK, GRID_SPEC, decode_variable, SpatialForecast, SpatialForecastProvider, SpatialForecastUnavailable, validate_spatial_forecast
 
 
 @dataclass(frozen=True)
@@ -23,6 +23,8 @@ class GFSVariableSpec:
 GFS_VARIABLES = {
     "temperature": GFSVariableSpec("temperature", "var_TMP|lev_2_m_above_ground", "C"),
     "precipitation": GFSVariableSpec("precipitation", "var_APCP", "mm", "source-defined accumulation"),
+    "wind_speed": GFSVariableSpec("wind_speed", "var_UGRD|var_VGRD|lev_10_m_above_ground", "m/s"),
+    "tmax": GFSVariableSpec("tmax", "var_TMAX|lev_2_m_above_ground", "C", "maximum over the preceding 6 h"),
 }
 
 
@@ -60,6 +62,10 @@ class GFSProductResolver:
         query = {"file": file_name, "dir": directory}
         if variable == "temperature":
             query.update({"lev_2_m_above_ground": "on", "var_TMP": "on"})
+        elif variable == "tmax":
+            query.update({"lev_2_m_above_ground": "on", "var_TMAX": "on"})
+        elif variable == "wind_speed":
+            query.update({"lev_10_m_above_ground": "on", "var_UGRD": "on", "var_VGRD": "on"})
         else:
             query.update({"var_APCP": "on"})
         url = f"{self.base_url}/cgi-bin/filter_gfs_0p25.pl?{urlencode(query)}"
@@ -74,32 +80,37 @@ class XarrayCfgribReader:
     """Decode a local GFS GRIB2 file when optional reader dependencies exist."""
 
     def read(self, path: Path, *, variable: str, product: GFSProduct) -> SpatialForecast:
+        with GRIB_DECODE_LOCK:
+            return self._read(path, variable=variable, product=product)
+
+    def _read(self, path: Path, *, variable: str, product: GFSProduct) -> SpatialForecast:
         try:
             import xarray as xr
         except ImportError as error:
             raise SpatialForecastUnavailable("GFS decoder unavailable: install xarray, cfgrib, and eccodes") from error
         try:
-            dataset = xr.open_dataset(path, engine="cfgrib", backend_kwargs={"indexpath": ""})
+            backend_kwargs: dict[str, Any] = {"indexpath": ""}
+            if variable == "precipitation":
+                # GFS files carry both a 6-hour bucket and the 0-to-lead total; cfgrib silently picks
+                # the bucket unless the accumulation start is pinned to the initialization.
+                backend_kwargs.update({
+                    "filter_by_keys": {"stepType": "accum", "startStep": 0},
+                    "read_keys": ["stepRange", "startStep", "endStep"],
+                })
+            dataset = xr.open_dataset(path, engine="cfgrib", backend_kwargs=backend_kwargs)
         except Exception as error:
             raise SpatialForecastUnavailable(f"GFS GRIB2 decoding failed: {error}") from error
         try:
             data = next(iter(dataset.data_vars.values()))
             latitudes = [float(value) for value in dataset.latitude.values]
             longitudes = [float(value) for value in dataset.longitude.values]
-            values = data.values.tolist()
-            source_units = str(data.attrs.get("units", ""))
-            units = source_units
-            if variable == "temperature":
-                if units in {"K", "kelvin"}:
-                    values = [[float(value) - 273.15 for value in row] for row in values]
-                    units = "C"
-                elif units not in {"C", "degC", "°C"}:
-                    raise SpatialForecastUnavailable(f"Unsupported GFS temperature units: {units}")
-            elif variable == "precipitation":
+            if variable == "precipitation":
                 step_range = str(data.attrs.get("GRIB_stepRange", ""))
                 if not step_range:
                     raise SpatialForecastUnavailable("GFS precipitation accumulation interval is unavailable")
-                units = units or "mm"
+                if step_range != f"0-{product.lead_hours}":
+                    raise SpatialForecastUnavailable(f"GFS precipitation accumulation {step_range} does not cover 0-{product.lead_hours} h")
+            values, units, source_units = decode_variable(dataset, variable, "GFS")
             if latitudes and latitudes[0] > latitudes[-1]:
                 latitudes.reverse()
                 values.reverse()
@@ -203,10 +214,11 @@ class GFSProvider(SpatialForecastProvider):
 
     def _retrieve(self, product: GFSProduct) -> tuple[Path, bool]:
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-        path = self.cache_dir / f"gfs_{product.initialization:%Y%m%d}T00Z_{product.lead_hours:03d}_{product.file_name}.grib2"
+        # The filter URL selects one variable, so the variable must be part of the cache key.
+        path = self.cache_dir / f"gfs_{product.initialization:%Y%m%d}T00Z_{product.lead_hours:03d}_{product.variable}_{product.file_name}.grib2"
         if path.exists():
             return path, True
-        request = Request(product.url, headers={"User-Agent": "SYNTHESIS/0.1"})
+        request = Request(product.url, headers={"User-Agent": "AIRAVAT/0.1"})
         try:
             with urlopen(request, timeout=self.timeout) as response:
                 content_length = response.headers.get("Content-Length")

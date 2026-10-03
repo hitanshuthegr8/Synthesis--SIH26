@@ -1,4 +1,4 @@
-"""Ingestion module for SYNTHESIS."""
+"""Ingestion module for AIRAVAT."""
 
 from app.ingestion.base import (
     BaseForecastIngestor,

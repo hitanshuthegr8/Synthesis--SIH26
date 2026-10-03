@@ -11,6 +11,7 @@ services:
       - DATABASE_URL=sqlite:////app/data/synthesis.db
       - GFS_ENABLED=true
       - ECMWF_ENABLED=true
+      - AIFS_ENABLED=true
       - ERA5_ENABLED=true
       - ERA5_CDS_URL=https://cds.climate.copernicus.eu/api
       - ERA5_CDS_KEY

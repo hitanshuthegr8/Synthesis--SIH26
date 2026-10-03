@@ -20,7 +20,7 @@ class ExplanationEngine:
         highest_model = max(weights, key=weights.__getitem__)
         lines = [
             f"{highest_model.upper()} received the highest calculated weight ({weights[highest_model]:.0%}) from the available skill inputs.",
-            f"The primary weather regime is {regime.name.value} ({regime.confidence:.0%} rule-based confidence).",
+            f"The primary weather regime is {regime.name.value} (rule score: {regime.confidence:.0%}).",
             f"Model disagreement is {disagreement.level.value} across {disagreement.model_count} model forecasts.",
             f"The forecast uncertainty range is {uncertainty.lower_bound:.2f} to {uncertainty.upper_bound:.2f}; it is not a calibrated confidence interval.",
         ]

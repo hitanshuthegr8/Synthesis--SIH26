@@ -96,14 +96,14 @@ HTTP byte range. Precipitation and ENS are not implemented.
 
 ## GET /api/forecast/grid/blend
 
-Request an explicit equal-weight SYNTHESIS blend of the real GFS and ECMWF
+Request an explicit equal-weight AIRAVAT blend of the real GFS and ECMWF
 temperature fields:
 
 `GET /api/forecast/grid/blend?variable=temperature&lead_hours=24&initialization=2026-09-25T00:00:00Z`
 
 Both providers must retrieve and validate the same initialization, lead,
 variable, units, and target grid. The response uses the existing spatial
-forecast representation and records `source=SYNTHESIS`, `model=SYNTHESIS`,
+forecast representation and records `source=AIRAVAT`, `model=AIRAVAT`,
 `blend_method=weighted mean`, and `source_weights` of 0.5 for GFS and ECMWF.
 If either provider is unavailable or mismatched, the endpoint returns
 `UNAVAILABLE`; it never falls back to one source or demo data.

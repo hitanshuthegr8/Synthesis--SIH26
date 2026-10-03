@@ -1,1 +1,1 @@
-"""SYNTHESIS - Adaptive Forecast Blending System."""
+"""AIRAVAT - Adaptive Forecast Blending System."""

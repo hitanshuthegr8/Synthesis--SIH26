@@ -98,7 +98,7 @@ def get_blended_spatial_forecast(
         return {
             "status": "AVAILABLE",
             "source": forecast.source,
-            "model": forecast.provenance.get("model", "SYNTHESIS"),
+            "model": forecast.provenance.get("model", "AIRAVAT"),
             "variable": forecast.variable,
             "lead_hours": forecast.lead_hours,
             "initialization": forecast.initialization,
@@ -112,8 +112,8 @@ def get_blended_spatial_forecast(
     except (SpatialForecastUnavailable, ValueError) as error:
         return {
             "status": "UNAVAILABLE",
-            "source": "SYNTHESIS",
-            "model": "SYNTHESIS",
+            "source": "AIRAVAT",
+            "model": "AIRAVAT",
             "variable": variable,
             "lead_hours": lead_hours,
             "initialization": initialization,

@@ -1,11 +1,13 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    APP_NAME: str = "SYNTHESIS"
+    APP_NAME: str = "AIRAVAT"
     VERSION: str = "0.1.0"
+    APP_ENV: str = "development"
     DEBUG: bool = False
     DEMO_MODE: bool = True
     DATABASE_URL: str = "sqlite:///./data/synthesis.db"
+    DATA_DIR: str = "./data"
     RANDOM_SEED: int = 42
     GFS_ENABLED: bool = False
     GFS_BASE_URL: str = "https://nomads.ncep.noaa.gov"
@@ -17,6 +19,8 @@ class Settings(BaseSettings):
     ECMWF_BASE_URL: str = "https://data.ecmwf.int/forecasts"
     ECMWF_CACHE_DIR: str = "./data/ecmwf"
     ECMWF_REQUEST_TIMEOUT_SECONDS: float = 30.0
+    AIFS_ENABLED: bool = False
+    AIFS_CACHE_DIR: str = "./data/aifs"
     ERA5_ENABLED: bool = False
     ERA5_CDS_URL: str = "https://cds.climate.copernicus.eu/api"
     ERA5_CDS_KEY: str | None = None

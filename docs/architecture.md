@@ -2,7 +2,7 @@
 
 ## Modular Monolith
 
-The SYNTHESIS backend is structured as a modular monolith. This allows rapid development while keeping boundaries clean for future extraction if needed.
+The AIRAVAT backend is structured as a modular monolith. This allows rapid development while keeping boundaries clean for future extraction if needed.
 
 ## System Flow
 Ingest → Regime → Skill → Disagreement → Weights → Blend → Uncertainty → Explain → Verify

@@ -2,7 +2,6 @@
 from collections import defaultdict
 from collections.abc import Sequence
 
-from app.core.constants import WeatherRegimeType
 from app.domain.forecast import Forecast
 from app.domain.regime import WeatherRegime
 from app.regime.rules import RegimeFeatures, regime_scores

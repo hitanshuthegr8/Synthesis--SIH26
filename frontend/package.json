@@ -1,5 +1,5 @@
 {
-  "name": "synthesis-dashboard",
+  "name": "airavat-dashboard",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -8,12 +8,15 @@
     "build": "node ./node_modules/typescript/bin/tsc -b && node ./node_modules/vite/bin/vite.js build"
   },
   "dependencies": {
+    "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "latest",
+    "echarts": "^5.5.0",
     "lucide-react": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "vite": "latest",
-    "typescript": "latest"
+    "three": "^0.186.1",
+    "typescript": "latest",
+    "vite": "latest"
   },
   "devDependencies": {
     "@types/react": "latest",

@@ -22,7 +22,7 @@ class TestConfig:
     """Verify configuration loads correctly."""
 
     def test_app_name(self) -> None:
-        assert settings.APP_NAME == "SYNTHESIS"
+        assert settings.APP_NAME == "AIRAVAT"
 
     def test_version(self) -> None:
         assert settings.VERSION == "0.1.0"

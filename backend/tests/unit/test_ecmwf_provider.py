@@ -8,6 +8,7 @@ from app.spatial.ecmwf import (
     ECMWFProductResolver,
     ECMWFProvider,
     parse_index,
+    parse_index_entries,
     _subset_target_grid,
 )
 from app.spatial.forecast import GRID_SPEC, SpatialForecastUnavailable
@@ -46,12 +47,26 @@ def test_ecmwf_rejects_non_00z_and_non_temperature() -> None:
             lead_hours=24,
             variable="temperature",
         )
-    with pytest.raises(ValueError, match="only temperature"):
+    with pytest.raises(ValueError, match="Unsupported ECMWF variable"):
         ECMWFProductResolver().resolve(
             initialization=datetime(2026, 9, 25, tzinfo=timezone.utc),
             lead_hours=24,
-            variable="precipitation",
+            variable="humidity",
         )
+
+
+def test_ecmwf_wind_selects_both_components() -> None:
+    product = ECMWFProductResolver("https://example.test/forecasts").resolve(
+        initialization=datetime(2026, 9, 25, tzinfo=timezone.utc),
+        lead_hours=24,
+        variable="wind_speed",
+    )
+    entries = parse_index_entries(
+        '{"param":"10v","levtype":"sfc","step":"24","type":"fc","stream":"oper","_offset":40,"_length":5}\n'
+        '{"param":"10u","levtype":"sfc","step":"24","type":"fc","stream":"oper","_offset":12,"_length":7}\n',
+        product=product,
+    )
+    assert entries == [ECMWFIndexEntry("10u", "sfc", 24, 12, 7), ECMWFIndexEntry("10v", "sfc", 24, 40, 5)]
 
 
 def test_ecmwf_direct_subset_and_regridding_rejection() -> None:

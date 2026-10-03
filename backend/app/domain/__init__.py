@@ -1,4 +1,4 @@
-"""Domain models for the SYNTHESIS forecast blending system.
+"""Domain models for the AIRAVAT forecast blending system.
 
 Exports all core domain objects used throughout the application.
 """

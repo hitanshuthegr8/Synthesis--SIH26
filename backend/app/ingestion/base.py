@@ -1,4 +1,4 @@
-"""Base ingestion, validation, and normalization interfaces for SYNTHESIS.
+"""Base ingestion, validation, and normalization interfaces for AIRAVAT.
 
 Purpose:
     Enforce Rule 27 data quality pipeline:
@@ -18,7 +18,7 @@ from datetime import datetime
 from typing import Any, Sequence
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.core.constants import SUPPORTED_VARIABLES, SUPPORTED_MODELS, VARIABLE_UNITS
+from app.core.constants import SUPPORTED_VARIABLES
 from app.domain.forecast import Forecast
 
 
@@ -64,7 +64,7 @@ class IngestionBatchResult(BaseModel):
 
 
 def normalize_unit_and_value(variable: str, raw_value: float, raw_unit: str) -> tuple[float, str]:
-    """Normalize input unit and value to SYNTHESIS canonical standard units.
+    """Normalize input unit and value to AIRAVAT canonical standard units.
 
     Supported conversions:
     - Temperature:

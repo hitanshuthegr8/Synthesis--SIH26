@@ -41,7 +41,7 @@ def test_gfs_resolver_rejects_non_00z_and_unknown_variable() -> None:
         GFSProductResolver().resolve(
             initialization=datetime(2026, 9, 25, tzinfo=timezone.utc),
             lead_hours=24,
-            variable="wind_speed",
+            variable="humidity",
         )
 
 
@@ -99,7 +99,16 @@ def test_gfs_cache_reuses_deterministic_file(monkeypatch: pytest.MonkeyPatch, tm
     first, first_hit = provider._retrieve(product)
     second, second_hit = provider._retrieve(product)
     assert first == second
-    assert first.name == "gfs_20260925T00Z_024_gfs.t00z.pgrb2.0p25.f024.grib2"
+    assert first.name == "gfs_20260925T00Z_024_temperature_gfs.t00z.pgrb2.0p25.f024.grib2"
+
+    precipitation = GFSProductResolver("https://example.test").resolve(
+        initialization=datetime(2026, 9, 25, tzinfo=timezone.utc),
+        lead_hours=24,
+        variable="precipitation",
+    )
+    other, other_hit = provider._retrieve(precipitation)
+    assert other != first
+    assert other_hit is False
     assert first_hit is False
     assert second_hit is True
-    assert calls == 1
+    assert calls == 2

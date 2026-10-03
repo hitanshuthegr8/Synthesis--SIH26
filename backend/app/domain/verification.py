@@ -64,7 +64,7 @@ class ForecastAutopsy(BaseModel):
     run_id: str = Field(..., description="Forecast run identifier")
     variable: str
     valid_time: datetime
-    forecast_value: float = Field(..., description="SYNTHESIS blend value")
+    forecast_value: float = Field(..., description="AIRAVAT blend value")
     observation_value: float = Field(..., description="Observed value")
     blend_error: float = Field(..., description="Blend forecast - observation")
     model_forecasts: dict[str, float] = Field(
